@@ -4,10 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
-import { EmailMenu } from "@/components/ui/EmailMenu";
 import { Logo } from "@/components/ui/Logo";
 import { RollText } from "@/components/ui/RollText";
-import { mainNav } from "@/data/site";
+import { contactHref, mainNav } from "@/data/site";
 import { ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -46,9 +45,9 @@ export function Header() {
           <Logo className="size-7" />
         </Link>
         <div className="justify-self-end">
-          <EmailMenu className="label group font-medium" align="right">
-            <RollText>Email me</RollText>
-          </EmailMenu>
+          <Link href={contactHref} className="group">
+            <RollText>Contact us</RollText>
+          </Link>
         </div>
       </nav>
 
@@ -88,7 +87,9 @@ export function Header() {
                     </li>
                   ))}
                   <li>
-                    <EmailMenu className="font-display text-5xl font-bold tracking-[-2px]">Email me</EmailMenu>
+                    <Link href={contactHref} className="font-display text-5xl font-bold tracking-[-2px]">
+                      Contact us
+                    </Link>
                   </li>
                 </ul>
               </motion.div>

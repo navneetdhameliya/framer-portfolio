@@ -1,13 +1,21 @@
 import { Arrow } from "@/components/ui/Arrow";
 import { RollText } from "@/components/ui/RollText";
-import { platformLinks } from "@/data/site";
+import { platformLinks, upworkUrl } from "@/data/site";
 
-// Strip under the footer linking to marketplace profiles (Framer, Contra).
+// Strip under the footer linking to marketplace profiles (Upwork, Framer, Contra).
 export function PlatformBar() {
   return (
     <div className="border-t border-foreground/10">
       <div className="container-site flex py-5 flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="eyebrow opacity-70">Hire me on</p>
+        <a
+          href={upworkUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="eyebrow group inline-flex items-center gap-1.5 font-medium underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground"
+        >
+          Hire me on Upwork
+          <Arrow className="size-3 -rotate-45 transition-transform duration-300 group-hover:rotate-0" />
+        </a>
         <ul className="flex gap-2">
           {platformLinks.map((link) => (
             <li key={link.label}>

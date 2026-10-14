@@ -1,7 +1,7 @@
-import { PillContent, pillClass } from "@/components/ui/Button";
-import { EmailMenu } from "@/components/ui/EmailMenu";
+import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { SplitHeading } from "@/components/ui/SplitHeading";
+import { contactHref } from "@/data/site";
 
 // Lime "work together" panel shown above the footer on every page.
 export function CtaSection() {
@@ -18,9 +18,7 @@ export function CtaSection() {
           className="mt-4 text-[44px] leading-[1.1] tracking-[-2px] md:text-[60px] md:tracking-[-3px]"
         />
         <Reveal delay={0.2} className="mt-8">
-          <EmailMenu className={pillClass} align="center">
-            <PillContent>Contact me</PillContent>
-          </EmailMenu>
+          <Button href={contactHref}>Contact us</Button>
         </Reveal>
       </div>
     </section>

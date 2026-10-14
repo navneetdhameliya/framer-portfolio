@@ -2,7 +2,7 @@ import type { NavItem } from "@/types";
 
 // Site-wide content.
 export const siteConfig = {
-  // Website title shown in the browser tab and search results.
+  // Website title: browser tab, search results and the home page heading.
   title: "Artonest Framer Portfolio",
   name: "Artonest Design Studio",
   shortName: "Artonest",
@@ -18,6 +18,12 @@ export const siteConfig = {
 // Subject pre-filled in new email drafts (see components/ui/EmailMenu.tsx).
 export const emailSubject = `Project inquiry — ${siteConfig.name}`;
 export const mailtoHref = `mailto:${siteConfig.email}?subject=${encodeURIComponent(emailSubject)}`;
+
+// Page every "Contact us" button leads to.
+export const contactHref = "/contact";
+
+// Agency profile linked from "Hire me on Upwork" under the footer.
+export const upworkUrl = "https://www.upwork.com/agencies/artonest/";
 
 export const mainNav: NavItem[] = [
   { label: "Home", href: "/" },

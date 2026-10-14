@@ -1,14 +1,13 @@
-import { PillContent, pillClass } from "@/components/ui/Button";
-import { EmailMenu } from "@/components/ui/EmailMenu";
+import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { SplitHeading } from "@/components/ui/SplitHeading";
-import { siteConfig } from "@/data/site";
+import { contactHref, siteConfig } from "@/data/site";
 
 export function Hero() {
   return (
     <section className="container-site flex flex-col items-center pt-36 pb-24 text-center md:pt-[120px] md:pb-[120px]">
       <SplitHeading
-        text={siteConfig.name}
+        text={siteConfig.title}
         className="text-[56px] leading-[1.1] tracking-[-2px] md:text-[clamp(64px,8.7vw,120px)] md:tracking-[-0.04em]"
         delay={0.1}
       />
@@ -16,9 +15,7 @@ export function Hero() {
         <p>{siteConfig.tagline}</p>
       </Reveal>
       <Reveal trigger="load" delay={0.55} className="mt-8">
-        <EmailMenu className={pillClass} align="center">
-          <PillContent>Contact me</PillContent>
-        </EmailMenu>
+        <Button href={contactHref}>Contact us</Button>
       </Reveal>
     </section>
   );
