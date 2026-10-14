@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fffef5;
+  --foreground: #1c1e1e;
+  --accent: #daff36;
+  --muted: #b6b6b6;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --font-display: "Boska", Georgia, serif;
+  --font-sans: "Switzer", system-ui, sans-serif;
+  /* Breakpoints matched to the reference: phone < 810px ≤ tablet < 1200px ≤ desktop */
+  --breakpoint-md: 810px;
+  --breakpoint-lg: 1200px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Shared content width: every section's content aligns to the same 1440px column */
+@utility container-site {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+/* Small uppercase label used for nav, buttons and captions */
+.label {
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+/* Tiny uppercase label used for footer column headings and meta rows */
+.eyebrow {
+  font-size: 12px;
+  line-height: 1.2;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
