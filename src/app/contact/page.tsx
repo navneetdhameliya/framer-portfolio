@@ -39,15 +39,15 @@ export default function ContactPage() {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex h-full min-h-[132px] flex-col justify-between rounded-[10px] border border-background/15 p-5 transition-colors duration-300 hover:border-background hover:bg-background hover:text-foreground"
+                  className="group flex h-full min-h-[132px] flex-col justify-between rounded-[10px] bg-background p-5 text-foreground transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_16px_32px_-16px_rgba(0,0,0,0.6)]"
                 >
                   <span className="flex items-start justify-between gap-4">
-                    <span className="font-display text-[28px] leading-none font-bold tracking-[-1px]">{link.label}</span>
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-background/25 transition-colors duration-300 group-hover:border-foreground/20">
-                      <Arrow className="size-4 -rotate-45 transition-transform duration-300 group-hover:rotate-0" />
+                    <span className="text-[18px] leading-none font-medium tracking-[0.3px] uppercase">{link.label}</span>
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-foreground/20 transition-colors duration-300 group-hover:border-foreground group-hover:bg-foreground group-hover:text-background">
+                      <Arrow className="size-4" />
                     </span>
                   </span>
-                  <span className="mt-6 text-[14px] leading-[20px] opacity-65 transition-opacity group-hover:opacity-70">{link.note}</span>
+                  <span className="mt-6 text-[14px] leading-[20px] opacity-65">{link.note}</span>
                 </a>
               </li>
             ))}
