@@ -7,7 +7,8 @@ export const siteConfig = {
   role: "Designer &\nCreative Director",
   tagline: "Framer Designer & Developer building digital experiences for SaaS, startups & modern brands.",
   description: "Artonest Design Studio — Framer design and development for SaaS, startups and modern brands.",
-  url: "https://example.com",
+  // Public address of the site, used for full URLs in page metadata. Set in .env.local / on the host.
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   email: "artonest.design@gmail.com",
   phone: "079841 79697",
   year: new Date().getFullYear(),

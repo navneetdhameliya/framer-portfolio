@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/Button";
+import { PillContent, pillClass } from "@/components/ui/Button";
+import { EmailMenu } from "@/components/ui/EmailMenu";
 import { Reveal } from "@/components/ui/Reveal";
 import { SplitHeading } from "@/components/ui/SplitHeading";
 import { siteConfig } from "@/data/site";
@@ -15,7 +16,9 @@ export function Hero() {
         <p>{siteConfig.tagline}</p>
       </Reveal>
       <Reveal trigger="load" delay={0.55} className="mt-8">
-        <Button href="/about">About and resume</Button>
+        <EmailMenu className={pillClass} align="center">
+          <PillContent>Contact me</PillContent>
+        </EmailMenu>
       </Reveal>
     </section>
   );

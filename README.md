@@ -13,12 +13,19 @@ npm run lint       # ESLint
 npm run typecheck  # TypeScript check
 ```
 
+## Environment
+
+- `.env` – production values, committed so Vercel uses them at build time.
+  The only variable is `NEXT_PUBLIC_SITE_URL` (the site's public address).
+  Update it when you connect a custom domain. No secrets are required.
+- `.env.local` – local override (`http://localhost:3000`), not committed.
+
 The scripts call `node node_modules/...` directly instead of `next`/`eslint`, because the
 parent folder name contains `&`, which breaks npm's Windows `.cmd` shims.
 
 ## Pages
 
-- `/` – hero + three-column parallax work grid (each card opens the live site in a new tab)
+- `/` – hero + work grid (each card opens the live site in a new tab)
 - `/about` – role heading, intro, services/clients, testimonial slider
 
 Every page ends with the lime "Let's work together" panel and the footer.
