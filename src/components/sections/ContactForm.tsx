@@ -3,68 +3,42 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { PillContent, pillClass } from "@/components/ui/Button";
-import { emailSubject, siteConfig } from "@/data/site";
+import { siteConfig } from "@/data/site";
 import { ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-// Submissions go through FormSubmit (formsubmit.co), which emails them to
-// artonest.design@gmail.com as a Name / Email / Message table. The ID below is
-// FormSubmit's alias for that address, so the address isn't exposed in the page.
-// Each new site address (localhost, the Vercel URL, a custom domain) needs a
-// one-time "Activate Form" click in the email FormSubmit sends.
-const FORMSUBMIT_ID = "6a061fe2e21efd213ad0ff62c7b06238";
-const ENDPOINT = `https://formsubmit.co/ajax/${FORMSUBMIT_ID}`;
-
-type Status = "idle" | "sending" | "error";
+// Posts to /api/contact (src/app/api/contact/route.ts), which emails the inquiry
+// from the studio Gmail account. Visitors always see the thank-you pop-up right
+// away; delivery problems are logged on the server (Vercel → Logs), not shown.
 
 const fieldClass =
   "w-full rounded-[10px] border border-foreground/15 bg-white/50 px-4 text-[16px] leading-[24px] text-foreground placeholder:text-foreground/35 transition-colors outline-none hover:border-foreground/30 focus:border-foreground focus:bg-white";
 
 export function ContactForm() {
-  const [status, setStatus] = useState<Status>("idle");
-  const [error, setError] = useState("");
   const [thanksOpen, setThanksOpen] = useState(false);
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const data = new FormData(form);
-    // Bots fill the hidden field; real visitors never see it.
-    if (data.get("_honey")) return;
+    const payload = {
+      name: data.get("name"),
+      email: data.get("email"),
+      message: data.get("message"),
+      _honey: data.get("_honey"),
+    };
 
-    setStatus("sending");
-    setError("");
-    try {
-      const res = await fetch(ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        // Keys become the row labels in the email table.
-        body: JSON.stringify({
-          Name: data.get("name"),
-          Email: data.get("email"),
-          Message: data.get("message"),
-          _replyto: data.get("email"),
-          _subject: `${emailSubject} from ${data.get("name")}`,
-          _template: "table",
-          _captcha: "false",
-        }),
-      });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok || String(json.success) !== "true") {
-        const msg = String(json.message ?? "");
-        throw new Error(
-          /activat/i.test(msg)
-            ? "The contact form is still being set up, so your message wasn't delivered."
-            : "Sorry, your message couldn't be sent.",
-        );
-      }
-      form.reset();
-      setStatus("idle");
-      setThanksOpen(true);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Sorry, your message couldn't be sent.");
-      setStatus("error");
-    }
+    // Thank the visitor immediately; the email is sent in the background.
+    setThanksOpen(true);
+    form.reset();
+    fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true, // finish sending even if the visitor leaves the page
+    }).catch(() => {
+      // Network failure: nothing to show the visitor; the server logs failures.
+    });
   }
 
   return (
@@ -73,11 +47,11 @@ export function ContactForm() {
         <div className="grid gap-6 md:grid-cols-2">
           <label className="flex flex-col gap-2">
             <span className="eyebrow opacity-60">Name</span>
-            <input name="name" type="text" required autoComplete="name" placeholder="Your name" className={cn(fieldClass, "h-[52px]")} />
+            <input name="name" type="text" required maxLength={120} autoComplete="name" placeholder="Your name" className={cn(fieldClass, "h-[52px]")} />
           </label>
           <label className="flex flex-col gap-2">
             <span className="eyebrow opacity-60">Email</span>
-            <input name="email" type="email" required autoComplete="email" placeholder="you@company.com" className={cn(fieldClass, "h-[52px]")} />
+            <input name="email" type="email" required maxLength={200} autoComplete="email" placeholder="you@company.com" className={cn(fieldClass, "h-[52px]")} />
           </label>
         </div>
         <label className="flex flex-col gap-2">
@@ -85,6 +59,7 @@ export function ContactForm() {
           <textarea
             name="message"
             required
+            maxLength={5000}
             rows={6}
             placeholder="Tell me about your project"
             className={cn(fieldClass, "resize-y py-3.5")}
@@ -94,19 +69,9 @@ export function ContactForm() {
         {/* Honeypot spam trap, hidden from people and screen readers */}
         <input type="text" name="_honey" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
 
-        {status === "error" && (
-          <p role="alert" className="rounded-[10px] border border-red-700/30 bg-red-50 px-4 py-3 text-[14px] leading-[20px] text-red-800">
-            {error} Please email{" "}
-            <a href={`mailto:${siteConfig.email}`} className="underline">
-              {siteConfig.email}
-            </a>{" "}
-            directly.
-          </p>
-        )}
-
         <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <button type="submit" disabled={status === "sending"} className={cn(pillClass, "disabled:opacity-60")}>
-            <PillContent>{status === "sending" ? "Sending…" : "Submit"}</PillContent>
+          <button type="submit" className={pillClass}>
+            <PillContent>Submit</PillContent>
           </button>
           <p className="text-[14px] leading-[20px] opacity-60">
             Or email{" "}
@@ -122,8 +87,7 @@ export function ContactForm() {
   );
 }
 
-// Centered pop-up shown after a successful submit. Closes on the button,
-// a click on the backdrop, or Escape.
+// Centered thank-you pop-up. Closes on the button, a click on the backdrop, or Escape.
 function ThankYouDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const closeRef = useRef<HTMLButtonElement>(null);
 
@@ -155,7 +119,7 @@ function ThankYouDialog({ open, onClose }: { open: boolean; onClose: () => void 
             role="dialog"
             aria-modal="true"
             aria-labelledby="thanks-title"
-            className="w-full max-w-[480px] rounded-[10px] bg-accent px-6 py-12 text-center shadow-[0_24px_64px_-24px_rgba(28,30,30,0.45)] md:px-10"
+            className="w-full max-w-[480px] rounded-[10px] bg-background px-6 py-12 text-center shadow-[0_24px_64px_-24px_rgba(28,30,30,0.45)] md:px-10"
             initial={{ opacity: 0, y: 24, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.98 }}

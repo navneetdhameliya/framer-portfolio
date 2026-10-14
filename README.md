@@ -16,9 +16,9 @@ npm run typecheck  # TypeScript check
 ## Environment
 
 - `.env` – production values, committed so Vercel uses them at build time.
-  The only variable is `NEXT_PUBLIC_SITE_URL` (the site's public address).
-  Update it when you connect a custom domain. No secrets are required.
-- `.env.local` – local override (`http://localhost:3000`), not committed.
+  Holds `NEXT_PUBLIC_SITE_URL` (the site's public address) and `GMAIL_USER`.
+  Never put secrets here.
+- `.env.local` – local overrides and secrets (`GMAIL_APP_PASSWORD`), not committed.
 
 The scripts call `node node_modules/...` directly instead of `next`/`eslint`, because the
 parent folder name contains `&`, which breaks npm's Windows `.cmd` shims.
@@ -26,7 +26,7 @@ parent folder name contains `&`, which breaks npm's Windows `.cmd` shims.
 ## Pages
 
 - `/` – hero + work grid (each card opens the live site in a new tab)
-- `/contact` – "Contact Me" form (name, email, message) that emails inquiries via FormSubmit
+- `/contact` – "Contact Me" form (name, email, message) that emails inquiries from your Gmail via `/api/contact`
 
 The home page ends with the lime "Let's work together" panel; every page ends with the footer.
 
@@ -45,15 +45,19 @@ The logo is `public/images/logo.png` (rendered by `src/components/ui/Logo.tsx`).
 
 ## Contact form
 
-Submissions are sent to artonest.design@gmail.com by [FormSubmit](https://formsubmit.co)
-(no account or API key) as a Name / Email / Message table; replying answers the
-visitor. The form posts to FormSubmit's private ID for that address
-(`FORMSUBMIT_ID` in `src/components/sections/ContactForm.tsx`), so the address
-isn't exposed to spam bots. A successful submit opens a thank-you pop-up.
+The form posts to `/api/contact` (`src/app/api/contact/route.ts`), which sends the
+inquiry from artonest.design@gmail.com to itself as a Name / Email / Message
+table, with the visitor as Reply-To. The thank-you pop-up opens as soon as the
+visitor clicks Submit; if sending fails it switches to an error and the form is
+refilled. No third-party form service or activation is involved.
 
-Each new site address (localhost, the Vercel URL, a custom domain) needs a
-one-time activation: the first submission from it sends an "Activate Form"
-email — click it once, then messages are delivered.
+It needs one secret, a **Gmail App Password** for that account:
+
+1. Turn on 2-Step Verification for the Google account, then create an app
+   password at https://myaccount.google.com/apppasswords.
+2. Vercel → Project → Settings → Environment Variables: add
+   `GMAIL_APP_PASSWORD` with that value, then redeploy.
+3. Locally: paste it after `GMAIL_APP_PASSWORD=` in `.env.local` (never in `.env`).
 
 ## Structure
 
