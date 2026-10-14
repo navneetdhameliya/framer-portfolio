@@ -7,14 +7,17 @@ type ButtonProps = {
   href: string;
   children: string;
   direction?: "left" | "right";
+  // "light" is for dark backgrounds (e.g. the black CTA panel).
+  variant?: "dark" | "light";
   className?: string;
 };
 
 const slide = "transition-transform duration-500 ease-[cubic-bezier(0.12,0.23,0.13,0.96)]";
 
-// Shared look so a <button> (e.g. the email menu trigger) can match the link pill.
-export const pillClass =
-  "label group inline-flex h-[47px] items-center gap-2 rounded-full bg-foreground px-5 text-background";
+// Shared look so a <button> (e.g. the form submit) can match the link pill.
+const pillBase = "label group inline-flex h-[47px] items-center gap-2 rounded-full px-5";
+export const pillClass = `${pillBase} bg-foreground text-background`;
+const pillLightClass = `${pillBase} bg-background text-foreground`;
 
 // Label + arrow. On hover the label rolls and the arrow slides out
 // while a second arrow slides in behind it.
@@ -34,12 +37,15 @@ export function PillContent({ children, direction = "right" }: { children: strin
   );
 }
 
-// Dark pill link.
-export function Button({ href, children, direction = "right", className }: ButtonProps) {
+// Pill link: dark by default, light on dark backgrounds.
+export function Button({ href, children, direction = "right", variant = "dark", className }: ButtonProps) {
   const isExternal = /^(mailto:|tel:|https?:)/.test(href);
   const Component = isExternal ? "a" : Link;
   return (
-    <Component href={href} className={cn(pillClass, className)}>
+    <Component
+      href={href}
+      className={cn(variant === "light" ? pillLightClass : pillClass, className)}
+    >
       <PillContent direction={direction}>{children}</PillContent>
     </Component>
   );

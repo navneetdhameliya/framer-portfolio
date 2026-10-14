@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { motion } from "motion/react";
-import { EmailMenu } from "@/components/ui/EmailMenu";
 import { RollText } from "@/components/ui/RollText";
 import { footerLinks, siteConfig } from "@/data/site";
 import { ease } from "@/lib/motion";
@@ -34,12 +33,13 @@ export function Footer() {
                   const external = /^(mailto:|tel:|https?:)/.test(link.href);
                   return (
                     <li key={link.href}>
-                      {link.href.startsWith("mailto:") ? (
-                        <EmailMenu className="group font-medium normal-case" align="right" placement="top">
-                          <RollText>{link.label}</RollText>
-                        </EmailMenu>
-                      ) : external ? (
-                        <a href={link.href} className="group" target={link.href.startsWith("http") ? "_blank" : undefined} rel="noreferrer">
+                      {external ? (
+                        <a
+                          href={link.href}
+                          className={link.label.includes("@") ? "group normal-case" : "group"}
+                          target={link.href.startsWith("http") ? "_blank" : undefined}
+                          rel="noopener noreferrer"
+                        >
                           <RollText>{link.label}</RollText>
                         </a>
                       ) : (

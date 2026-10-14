@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { PillContent, pillClass } from "@/components/ui/Button";
-import { siteConfig } from "@/data/site";
+import { emailComposeHref, siteConfig } from "@/data/site";
 import { ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -75,7 +75,7 @@ export function ContactForm() {
           </button>
           <p className="text-[14px] leading-[20px] opacity-60">
             Or email{" "}
-            <a href={`mailto:${siteConfig.email}`} className="underline underline-offset-2">
+            <a href={emailComposeHref} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
               {siteConfig.email}
             </a>
           </p>

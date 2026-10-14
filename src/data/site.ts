@@ -15,9 +15,10 @@ export const siteConfig = {
   year: new Date().getFullYear(),
 };
 
-// Subject pre-filled in new email drafts (see components/ui/EmailMenu.tsx).
+// Subject used for new emails and contact-form messages.
 export const emailSubject = `Project inquiry — ${siteConfig.name}`;
-export const mailtoHref = `mailto:${siteConfig.email}?subject=${encodeURIComponent(emailSubject)}`;
+// Opens a new Gmail message to the studio (used by every email link; opens in a new tab).
+export const emailComposeHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${siteConfig.email}&su=${encodeURIComponent(emailSubject)}`;
 
 // Page every "Contact us" button leads to.
 export const contactHref = "/contact";
@@ -25,10 +26,8 @@ export const contactHref = "/contact";
 // Agency profile linked from "Hire me on Upwork" under the footer.
 export const upworkUrl = "https://www.upwork.com/agencies/artonest/";
 
-export const mainNav: NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "Contact", href: "/contact" },
-];
+// Header links. "Contact us" sits separately on the right (see Header.tsx).
+export const mainNav: NavItem[] = [{ label: "Home", href: "/" }];
 
 export const footerLinks: { title: string; links: NavItem[] }[] = [
   {
@@ -49,13 +48,20 @@ export const footerLinks: { title: string; links: NavItem[] }[] = [
   {
     title: "Contact",
     links: [
-      { label: siteConfig.email, href: mailtoHref },
+      { label: siteConfig.email, href: emailComposeHref },
       { label: siteConfig.phone, href: `tel:${siteConfig.phone.replace(/\s/g, "")}` },
     ],
   },
 ];
 
 // Platform profiles shown in the bar below the footer.
+// Freelance platforms shown as cards on the contact page.
+export const hireLinks: Array<NavItem & { note: string }> = [
+  { label: "Upwork", href: upworkUrl, note: "Agency profile" },
+  { label: "Framer", href: "https://www.framer.com/@artonest-design-studio/", note: "Framer expert profile" },
+  { label: "Contra", href: "https://contra.com/artonestdesign/work?r=Artonestdesign", note: "Freelance profile" },
+];
+
 export const platformLinks: NavItem[] = [
   { label: "Framer", href: "https://www.framer.com/@artonest-design-studio/" },
   { label: "Contra", href: "https://contra.com/artonestdesign/work?r=Artonestdesign" },
