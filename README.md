@@ -26,17 +26,16 @@ parent folder name contains `&`, which breaks npm's Windows `.cmd` shims.
 ## Pages
 
 - `/` – hero + work grid (each card opens the live site in a new tab)
-- `/about` – role heading, intro, services/clients, testimonial slider
+- `/contact` – "Contact Me" form (name, email, message) that emails inquiries via FormSubmit
 
-Every page ends with the lime "Let's work together" panel and the footer.
+The home page ends with the lime "Let's work together" panel; every page ends with the footer.
 
 ## Updating content
 
 All copy lives in `src/data/`:
 
-- `site.ts` – name, tagline, role, email, phone, nav and footer links
+- `site.ts` – website title, studio name, tagline, email, phone, nav and footer links
 - `projects.ts` – client work: title, live URL, industry, service (from the "Framer 2026 Work sheet")
-- `about.ts` – intro, services, clients, testimonials
 
 Project covers are screenshots of the live sites in `public/images/work/<slug>.webp`
 (900px wide). To add a project, add a row to `projects.ts` and drop a matching
@@ -44,20 +43,32 @@ Project covers are screenshots of the live sites in `public/images/work/<slug>.w
 
 The logo is `public/images/logo.png` (rendered by `src/components/ui/Logo.tsx`).
 
+## Contact form
+
+Submissions are sent to artonest.design@gmail.com by [FormSubmit](https://formsubmit.co)
+(no account or API key) as a Name / Email / Message table; replying answers the
+visitor. The form posts to FormSubmit's private ID for that address
+(`FORMSUBMIT_ID` in `src/components/sections/ContactForm.tsx`), so the address
+isn't exposed to spam bots. A successful submit opens a thank-you pop-up.
+
+Each new site address (localhost, the Vercel URL, a custom domain) needs a
+one-time activation: the first submission from it sends an "Activate Form"
+email — click it once, then messages are delivered.
+
 ## Structure
 
 ```
 src/
   app/
-    layout.tsx             Fonts (Boska + Switzer via Fontshare), header, CTA, footer
-    page.tsx               Home
-    about/page.tsx         About
+    layout.tsx             Fonts (Boska + Switzer via Fontshare), header, footer
+    page.tsx               Home (hero, work grid, CTA panel)
+    contact/page.tsx       Contact form
     globals.css            Color tokens, breakpoints (810px / 1200px), label styles
   components/
     layout/                Header (slide-in, mobile menu), Footer (line draw, wordmark)
-    sections/              Hero, WorkGrid, ProjectCard, CtaSection, Testimonials
+    sections/              Hero, WorkGrid, ProjectCard, CtaSection, ContactForm
     ui/                    Button, RollText, Reveal, SplitHeading, Media, Logo, Arrow
-  data/                    site.ts, projects.ts, about.ts
+  data/                    site.ts, projects.ts
   lib/                     motion.ts (shared easing), utils.ts
   types/                   Shared types
 ```

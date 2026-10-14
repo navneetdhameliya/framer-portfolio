@@ -2,13 +2,12 @@ import type { Metadata } from "next";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { PlatformBar } from "@/components/layout/PlatformBar";
-import { CtaSection } from "@/components/sections/CtaSection";
 import { siteConfig } from "@/data/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
-  title: { default: siteConfig.name, template: `%s — ${siteConfig.name}` },
+  title: { default: siteConfig.title, template: `%s — ${siteConfig.title}` },
   description: siteConfig.description,
 };
 
@@ -25,7 +24,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col">
         <Header />
         <main className="flex-1">{children}</main>
-        <CtaSection />
         <Footer />
         <PlatformBar />
       </body>

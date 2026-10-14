@@ -10,13 +10,6 @@ export type Media = {
   tone: string;
 };
 
-export type Testimonial = {
-  quote: string;
-  name: string;
-  role: string;
-  image?: Media;
-};
-
 export type Service = "Design" | "Development" | "Design + Development";
 
 export type Project = {

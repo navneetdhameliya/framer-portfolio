@@ -1,3 +1,4 @@
+import { CtaSection } from "@/components/sections/CtaSection";
 import { Hero } from "@/components/sections/Hero";
 import { WorkGrid } from "@/components/sections/WorkGrid";
 
@@ -6,6 +7,7 @@ export default function Home() {
     <>
       <Hero />
       <WorkGrid />
+      <CtaSection />
     </>
   );
 }

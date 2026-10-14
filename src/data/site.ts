@@ -2,9 +2,10 @@ import type { NavItem } from "@/types";
 
 // Site-wide content.
 export const siteConfig = {
+  // Website title shown in the browser tab and search results.
+  title: "Artonest Framer Portfolio",
   name: "Artonest Design Studio",
   shortName: "Artonest",
-  role: "Designer &\nCreative Director",
   tagline: "Framer Designer & Developer building digital experiences for SaaS, startups & modern brands.",
   description: "Artonest Design Studio — Framer design and development for SaaS, startups and modern brands.",
   // Public address of the site, used for full URLs in page metadata. Set in .env.local / on the host.
@@ -20,7 +21,7 @@ export const mailtoHref = `mailto:${siteConfig.email}?subject=${encodeURICompone
 
 export const mainNav: NavItem[] = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export const footerLinks: { title: string; links: NavItem[] }[] = [
@@ -28,7 +29,7 @@ export const footerLinks: { title: string; links: NavItem[] }[] = [
     title: "Website",
     links: [
       { label: "Home", href: "/" },
-      { label: "About", href: "/about" },
+      { label: "Contact", href: "/contact" },
     ],
   },
   {
