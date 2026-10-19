@@ -70,15 +70,15 @@ export function ContactForm() {
         <input type="text" name="_honey" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
 
         <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <button type="submit" className={pillClass}>
-            <PillContent>Submit</PillContent>
-          </button>
           <p className="text-[14px] leading-[20px] opacity-60">
             Or email{" "}
             <a href={emailComposeHref} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
               {siteConfig.email}
             </a>
           </p>
+          <button type="submit" className={pillClass}>
+            <PillContent>Submit</PillContent>
+          </button>
         </div>
       </form>
 

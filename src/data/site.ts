@@ -8,8 +8,13 @@ export const siteConfig = {
   shortName: "Artonest",
   tagline: "Framer Designer & Developer building digital experiences for SaaS, startups & modern brands.",
   description: "Artonest Design Studio — Framer design and development for SaaS, startups and modern brands.",
-  // Public address of the site, used for full URLs in page metadata. Set in .env.local / on the host.
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  // Public address of the site, used for full URLs in page metadata. Uses
+  // NEXT_PUBLIC_SITE_URL if set, else the production address Vercel provides.
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : "http://localhost:3000"),
   email: "artonest.design@gmail.com",
   phone: "079841 79697",
   year: new Date().getFullYear(),

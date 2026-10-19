@@ -15,10 +15,13 @@ npm run typecheck  # TypeScript check
 
 ## Environment
 
-- `.env` – production values, committed so Vercel uses them at build time.
-  Holds `NEXT_PUBLIC_SITE_URL` (the site's public address) and `GMAIL_USER`.
-  Never put secrets here.
-- `.env.local` – local overrides and secrets (`GMAIL_APP_PASSWORD`), not committed.
+`.env` and `.env.local` stay on your computer: git ignores every `.env*` file,
+so none of them are pushed.
+
+- `.env.local` – local secrets, e.g. `GMAIL_APP_PASSWORD` for the contact form.
+- On Vercel, set `GMAIL_APP_PASSWORD` in Project → Settings → Environment
+  Variables. The site address comes from Vercel automatically; set
+  `NEXT_PUBLIC_SITE_URL` there only to override it (e.g. a custom domain).
 
 The scripts call `node node_modules/...` directly instead of `next`/`eslint`, because the
 parent folder name contains `&`, which breaks npm's Windows `.cmd` shims.
