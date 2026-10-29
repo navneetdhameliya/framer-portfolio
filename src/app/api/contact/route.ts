@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { budgetRanges, projectTypes } from "@/data/contact";
 import { emailSubject, siteConfig } from "@/data/site";
 import { isEmailFormatValid } from "@/lib/email-check";
 import { domainAcceptsMail } from "@/lib/email-domain";
@@ -32,9 +33,15 @@ export async function POST(request: Request) {
   const name = String(body.name ?? "").replace(/[\r\n]+/g, " ").trim();
   const email = String(body.email ?? "").trim();
   const message = String(body.message ?? "").trim();
+  const projectType = String(body.projectType ?? "");
+  const budget = String(body.budget ?? "");
 
   if (!name || !email || !message) {
     return Response.json({ ok: false, error: "Please fill in your name, email and message." }, { status: 400 });
+  }
+  // Only the dropdowns' own choices are accepted.
+  if (!(projectTypes as readonly string[]).includes(projectType) || !(budgetRanges as readonly string[]).includes(budget)) {
+    return Response.json({ ok: false, error: "Please choose a project type and budget range." }, { status: 400 });
   }
   // Only a definite "no" blocks here, so a DNS hiccup never drops a real inquiry.
   if (!isEmailFormatValid(email) || (await domainAcceptsMail(email)) === "no") {
@@ -61,6 +68,8 @@ export async function POST(request: Request) {
   const rows = [
     ["Name", name],
     ["Email", email],
+    ["Project type", projectType],
+    ["Budget", budget],
     ["Message", message],
   ];
   const html = `
@@ -69,7 +78,7 @@ export async function POST(request: Request) {
         .map(
           ([label, value]) => `
         <tr>
-          <th align="left" valign="top" style="border:1px solid #e3e1d6;background:#f6f5ec;width:110px">${label}</th>
+          <th align="left" valign="top" style="border:1px solid #e3e1d6;background:#f6f5ec;width:120px">${label}</th>
           <td style="border:1px solid #e3e1d6;white-space:pre-wrap">${escapeHtml(value)}</td>
         </tr>`,
         )

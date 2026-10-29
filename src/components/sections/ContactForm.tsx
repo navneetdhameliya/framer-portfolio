@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { PillContent, pillClass } from "@/components/ui/Button";
+import { budgetRanges, projectTypes } from "@/data/contact";
 import { emailComposeHref, siteConfig } from "@/data/site";
 import { isEmailFormatValid, suggestEmail } from "@/lib/email-check";
 import { ease } from "@/lib/motion";
@@ -21,6 +22,53 @@ type Popup =
 
 const fieldClass =
   "w-full rounded-[10px] border border-foreground/15 bg-white/50 px-4 text-[16px] leading-[24px] text-foreground placeholder:text-foreground/35 transition-colors outline-none hover:border-foreground/30 focus:border-foreground focus:bg-white";
+
+// Dropdown in the form's field style. Shows the placeholder in muted text until
+// a choice is made (":invalid" while the required value is still empty).
+function SelectField({
+  name,
+  label,
+  placeholder,
+  options,
+}: {
+  name: string;
+  label: string;
+  placeholder: string;
+  options: readonly string[];
+}) {
+  return (
+    <label className="flex flex-col gap-2">
+      <span className="eyebrow opacity-60">{label}</span>
+      <span className="relative">
+        <select
+          name={name}
+          required
+          defaultValue=""
+          className={cn(fieldClass, "h-[52px] cursor-pointer appearance-none pr-11 invalid:text-foreground/35 [&>option]:text-foreground")}
+        >
+          <option value="" disabled>
+            {placeholder}
+          </option>
+          {options.map((o) => (
+            <option key={o} value={o}>
+              {o}
+            </option>
+          ))}
+        </select>
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          className="pointer-events-none absolute top-1/2 right-4 size-4 -translate-y-1/2 opacity-60"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </span>
+    </label>
+  );
+}
 
 async function checkEmailOnServer(email: string): Promise<Popup | null> {
   try {
@@ -72,6 +120,8 @@ export function ContactForm() {
     const payload = {
       name: data.get("name"),
       email,
+      projectType: data.get("projectType"),
+      budget: data.get("budget"),
       message: data.get("message"),
       _honey: data.get("_honey"),
     };
@@ -127,6 +177,10 @@ export function ContactForm() {
             />
           </label>
         </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <SelectField name="projectType" label="Project type" placeholder="Select a project type" options={projectTypes} />
+          <SelectField name="budget" label="Budget range" placeholder="Select a budget" options={budgetRanges} />
+        </div>
         <label className="flex flex-col gap-2">
           <span className="eyebrow opacity-60">Message</span>
           <textarea
@@ -156,7 +210,7 @@ export function ContactForm() {
             onClick={(e) => {
               // Empty name/message: let the browser point at the missing field.
               const form = e.currentTarget.form;
-              const empty = form && [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("[required]")].find((f) => !f.value.trim());
+              const empty = form && [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>("[required]")].find((f) => !f.value.trim());
               if (empty && empty.name !== "email") {
                 e.preventDefault();
                 empty.reportValidity();
