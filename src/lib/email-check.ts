@@ -20,6 +20,24 @@ const COMMON_DOMAINS = [
   "protonmail.com",
   "yahoo.co.in",
   "rediffmail.com",
+  // Real providers, listed so they're never "corrected" to a similar name.
+  "mail.com",
+  "email.com",
+  "googlemail.com",
+  "yahoo.co.uk",
+  "hotmail.co.uk",
+  "live.co.uk",
+  "outlook.in",
+  "yahoo.in",
+  "gmail.de",
+  "gmx.com",
+  "gmx.net",
+  "ymail.com",
+  "yandex.com",
+  "zoho.com",
+  "msn.com",
+  "me.com",
+  "mac.com",
 ];
 
 function editDistance(a: string, b: string) {

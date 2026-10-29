@@ -3,10 +3,12 @@ import { resolve4, resolveMx } from "node:dns/promises";
 // Server only. Checks whether an email address's domain can receive mail at all.
 // This catches typos like "gmail.con" or made-up domains; it can't confirm that a
 // particular inbox exists (mail servers don't reveal that).
-//   "yes"     – the domain has mail servers (or an address mail can go to)
+//   "mx"      – the domain has mail servers
+//   "a-only"  – no mail servers, only a web address (mail can technically go
+//               there, but parked typo domains like "gmial.com" look like this)
 //   "no"      – the domain doesn't exist or explicitly accepts no mail
 //   "unknown" – no clear answer (DNS broken or unreachable); callers decide
-export type DomainMail = "yes" | "no" | "unknown";
+export type DomainMail = "mx" | "a-only" | "no" | "unknown";
 
 const domainOf = (email: string) => email.slice(email.lastIndexOf("@") + 1).toLowerCase();
 
@@ -14,14 +16,14 @@ const domainOf = (email: string) => email.slice(email.lastIndexOf("@") + 1).toLo
 async function viaSystemDns(domain: string): Promise<DomainMail> {
   try {
     const mx = await resolveMx(domain);
-    return mx.some((r) => r.exchange && r.exchange !== ".") ? "yes" : "no";
+    return mx.some((r) => r.exchange && r.exchange !== ".") ? "mx" : "no";
   } catch (err) {
     const code = (err as NodeJS.ErrnoException).code;
     if (code === "ENOTFOUND") return "no";
     if (code !== "ENODATA") return "unknown"; // resolver unreachable, timeout, server failure…
     // No MX records: mail can still go to the domain's own address record.
     try {
-      return (await resolve4(domain)).length > 0 ? "yes" : "no";
+      return (await resolve4(domain)).length > 0 ? "a-only" : "no";
     } catch {
       return "no";
     }
@@ -43,9 +45,9 @@ async function viaDnsOverHttps(domain: string): Promise<DomainMail> {
     if (mx.Status === 3) return "no"; // NXDOMAIN: the domain doesn't exist
     if (mx.Status !== 0) return "unknown"; // e.g. SERVFAIL: the domain's DNS is broken
     const records = (mx.Answer ?? []).filter((a) => a.type === 15).map((a) => a.data.trim());
-    if (records.length) return records.some((r) => !/^\d+\s+\.$/.test(r)) ? "yes" : "no";
+    if (records.length) return records.some((r) => !/^\d+\s+\.$/.test(r)) ? "mx" : "no";
     const a = await dohQuery(domain, "A");
-    return a.Status === 0 && (a.Answer ?? []).some((r) => r.type === 1) ? "yes" : "no";
+    return a.Status === 0 && (a.Answer ?? []).some((r) => r.type === 1) ? "a-only" : "no";
   } catch {
     return "unknown";
   }

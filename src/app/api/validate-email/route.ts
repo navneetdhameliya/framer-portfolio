@@ -14,11 +14,11 @@ export async function POST(request: Request) {
   if (!isEmailFormatValid(email)) {
     return Response.json({ ok: false, reason: "format", suggestion: suggestEmail(email) });
   }
-  // Block domains that can't receive mail. When DNS gives no clear answer, block
-  // only if the domain also looks like a typo of a common provider ("gmial.com").
-  const mail = await domainAcceptsMail(email);
+  // Block domains that can't receive mail, and near-misses of well-known
+  // providers ("gmial.com", "gmai.com"): those are typos even when someone has
+  // set up mail servers on them to catch mistyped email.
   const suggestion = suggestEmail(email);
-  if (mail === "no" || (mail === "unknown" && suggestion)) {
+  if (suggestion || (await domainAcceptsMail(email)) === "no") {
     return Response.json({ ok: false, reason: "domain", suggestion });
   }
   return Response.json({ ok: true });
