@@ -40,9 +40,16 @@ All copy lives in `src/data/`:
 - `site.ts` – website title, studio name, tagline, email, phone, nav and footer links
 - `projects.ts` – client work: title, live URL, industry, service (from the "Framer 2026 Work sheet")
 
-Project covers are screenshots of the live sites in `public/images/work/<slug>.webp`
-(900px wide). To add a project, add a row to `projects.ts` and drop a matching
-`<slug>.webp` in that folder; to replace a cover, overwrite the file.
+Project cards are 4:3. Covers come from:
+
+- **Designed thumbnails** (1600×1200) in `public/images/thumbnails/<slug>.webp`,
+  for the slugs listed in `thumbnails` in `projects.ts`. A second image for the
+  hover effect goes in `hoverImages`.
+- **Website screenshots** in `public/images/work/<slug>.webp` for every other project.
+
+To add a thumbnail: save it as `public/images/thumbnails/<slug>.webp` and add the
+slug to `thumbnails`. Use a new file name when replacing an image (e.g.
+`<slug>-v2.webp`), because image caches keep serving the old file under the same name.
 
 The logo is `public/images/logo.png` (rendered by `src/components/ui/Logo.tsx`).
 

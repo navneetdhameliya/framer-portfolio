@@ -18,5 +18,7 @@ export type Project = {
   industry: string;
   service?: Service;
   url: string;
+  // Optional second image, faded in when the card is hovered.
+  hover?: Media;
   cover: Media;
 };

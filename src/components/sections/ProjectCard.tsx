@@ -5,17 +5,23 @@ import type { Project } from "@/types";
 // "srgpropertygroup.com" from "https://www.srgpropertygroup.com/"
 const displayUrl = (url: string) => new URL(url).hostname.replace(/^www\./, "");
 
-// Portrait card linking to the live site. Caption hierarchy:
-// bold title → muted industry label → site address.
+const imageSizes = "(min-width: 1200px) 33vw, (min-width: 810px) 50vw, 100vw";
+const zoom = "transition-transform duration-700 ease-[cubic-bezier(0.12,0.23,0.13,0.96)] group-hover:scale-[1.04]";
+
+// 4:3 card (matching the 1600×1200 thumbnails) linking to the live site.
+// Caption hierarchy: bold title → muted industry label → site address.
 export function ProjectCard({ project }: { project: Project }) {
   return (
     <a href={project.url} target="_blank" rel="noopener noreferrer" className="group flex flex-col">
-      <div className="relative aspect-[4/5] overflow-hidden rounded-[10px] bg-foreground/5">
-        <Media
-          media={project.cover}
-          sizes="(min-width: 1200px) 33vw, (min-width: 810px) 50vw, 100vw"
-          className="transition-transform duration-700 ease-[cubic-bezier(0.12,0.23,0.13,0.96)] group-hover:scale-[1.04] [&_img]:object-top"
-        />
+      <div className="relative aspect-[4/3] overflow-hidden rounded-[10px] bg-foreground/5">
+        <Media media={project.cover} sizes={imageSizes} className={`${zoom} [&_img]:object-top`} />
+        {project.hover && (
+          <Media
+            media={project.hover}
+            sizes={imageSizes}
+            className="opacity-0 transition-[opacity,scale] duration-700 ease-[cubic-bezier(0.12,0.23,0.13,0.96)] group-hover:scale-[1.04] group-hover:opacity-100 [&_img]:object-top"
+          />
+        )}
         <span className="absolute top-4 right-4 flex size-10 scale-75 items-center justify-center rounded-full bg-background text-foreground opacity-0 shadow-sm transition duration-500 group-hover:scale-100 group-hover:opacity-100">
           <Arrow className="size-4 -rotate-45" />
         </span>

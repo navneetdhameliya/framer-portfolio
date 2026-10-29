@@ -2,7 +2,8 @@ import type { Project, Service } from "@/types";
 
 // Client work from the "Framer 2026 Work sheet" (Artonest & Sandip Client Work, then
 // Nikunj Client Work). Cards link straight to the live site.
-// Cover screenshots live in public/images/work/<slug>.webp.
+// Cards are 4:3. Covers come from designed thumbnails where available (see
+// `thumbnails` below), otherwise from website screenshots.
 const work: Array<[slug: string, title: string, url: string, industry: string, service?: Service]> = [
   // Artonest & Sandip Client Work
   ["tamayo-creative-media", "Tamayo Creative Media", "https://www.tamayocreativemedia.com/", "Sports Media"],
@@ -35,11 +36,40 @@ const work: Array<[slug: string, title: string, url: string, industry: string, s
   ["momntum", "Momntum", "https://momntum.com/", "AI / SaaS", "Design + Development"],
 ];
 
+// Projects with a designed 1600×1200 thumbnail in public/images/thumbnails/<slug>.webp.
+// Everything else uses its website screenshot from public/images/work/<slug>.webp.
+// (New images get new file names so image caches never serve an old version.)
+const thumbnails = new Set([
+  "centre-medical-decointe",
+  "ecs-groupe",
+  "excerra",
+  "glx-digital",
+  "hd-visual-story",
+  "kennedy-and-co",
+  "noca-media",
+  "oseille-tv",
+  "tamayo-creative-media",
+  "victoria-uluwatu",
+  "zorgsense",
+]);
+
+// Second image shown on hover: slug → file name in public/images/thumbnails (without .webp).
+const hoverImages: Record<string, string> = {
+  zorgsense: "zorgsense-2",
+};
+
 export const projects: Project[] = work.map(([slug, title, url, industry, service]) => ({
   slug,
   title,
   url,
   industry,
   service,
-  cover: { src: `/images/work/${slug}.webp`, alt: `${title} website`, tone: "#e8e6dc" },
+  cover: {
+    src: thumbnails.has(slug) ? `/images/thumbnails/${slug}.webp` : `/images/work/${slug}.webp`,
+    alt: `${title} website`,
+    tone: "#e8e6dc",
+  },
+  hover: hoverImages[slug]
+    ? { src: `/images/thumbnails/${hoverImages[slug]}.webp`, alt: `${title} website pages`, tone: "#e8e6dc" }
+    : undefined,
 }));
