@@ -50,9 +50,16 @@ The logo is `public/images/logo.png` (rendered by `src/components/ui/Logo.tsx`).
 
 The form posts to `/api/contact` (`src/app/api/contact/route.ts`), which sends the
 inquiry from artonest.design@gmail.com to itself as a Name / Email / Message
-table, with the visitor as Reply-To. The thank-you pop-up opens as soon as the
-visitor clicks Submit; if sending fails it switches to an error and the form is
-refilled. No third-party form service or activation is involved.
+table, with the visitor as Reply-To. Once the email address passes the check
+below, the thank-you pop-up opens and the inquiry is sent in the background;
+delivery failures are logged in Vercel → Logs. No third-party form service or
+activation is involved.
+
+Before sending, the email address is checked: its format in the browser, then
+`/api/validate-email` confirms the domain can receive mail (system DNS, falling
+back to Cloudflare DNS over HTTPS). Bad addresses get an error pop-up, with a
+"Did you mean…?" fix for common typos (`src/lib/email-check.ts`). No check can
+confirm a specific inbox exists.
 
 It needs one secret, a **Gmail App Password** for that account:
 

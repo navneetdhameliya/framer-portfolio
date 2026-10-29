@@ -1,11 +1,16 @@
 import nodemailer from "nodemailer";
 import { emailSubject, siteConfig } from "@/data/site";
+import { isEmailFormatValid } from "@/lib/email-check";
+import { domainAcceptsMail } from "@/lib/email-domain";
 
-// Sends contact-form inquiries from the studio Gmail account to itself, with the
-// visitor as Reply-To. Needs GMAIL_APP_PASSWORD (a Gmail App Password) set as a
-// secret environment variable: in .env.local locally and in Vercel's settings.
+// Sends contact-form inquiries to the studio inbox (siteConfig.email), with the
+// visitor as Reply-To and "<Visitor> via Artonest website" as the sender name.
+// Sending account: GMAIL_USER (defaults to the studio inbox) + GMAIL_APP_PASSWORD,
+// both set in .env.local locally and in Vercel's settings. Gmail shows "me" for
+// mail from your own address, so use a separate sending account (e.g. a second
+// Gmail) for the visitor's name to appear in the inbox list.
 
-const MAX = { name: 120, email: 200, message: 5000 };
+const MAX = { name: 120, message: 5000 };
 
 const escapeHtml = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
@@ -23,14 +28,16 @@ export async function POST(request: Request) {
     return Response.json({ ok: true });
   }
 
-  const name = String(body.name ?? "").trim();
+  // Newlines are stripped so the name is safe to use in the sender header.
+  const name = String(body.name ?? "").replace(/[\r\n]+/g, " ").trim();
   const email = String(body.email ?? "").trim();
   const message = String(body.message ?? "").trim();
 
   if (!name || !email || !message) {
     return Response.json({ ok: false, error: "Please fill in your name, email and message." }, { status: 400 });
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > MAX.email) {
+  // Only a definite "no" blocks here, so a DNS hiccup never drops a real inquiry.
+  if (!isEmailFormatValid(email) || (await domainAcceptsMail(email)) === "no") {
     return Response.json({ ok: false, error: "Please enter a valid email address." }, { status: 400 });
   }
   if (name.length > MAX.name || message.length > MAX.message) {
@@ -71,7 +78,7 @@ export async function POST(request: Request) {
 
   try {
     await transporter.sendMail({
-      from: { name: `${siteConfig.shortName} website`, address: user },
+      from: { name: `${name} via ${siteConfig.shortName} website`, address: user },
       to: siteConfig.email,
       replyTo: { name, address: email },
       subject: `${emailSubject} from ${name}`,
