@@ -6,7 +6,7 @@ import { domainAcceptsMail } from "@/lib/email-domain";
 export async function POST(request: Request) {
   let email = "";
   try {
-    email = String((await request.json()).email ?? "").trim();
+    email = String((await request.json()).email ?? "").trim().toLowerCase();
   } catch {
     return Response.json({ ok: false, reason: "format", suggestion: null }, { status: 400 });
   }

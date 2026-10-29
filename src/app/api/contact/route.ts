@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
   // Newlines are stripped so the name is safe to use in the sender header.
   const name = String(body.name ?? "").replace(/[\r\n]+/g, " ").trim();
-  const email = String(body.email ?? "").trim();
+  const email = String(body.email ?? "").trim().toLowerCase();
   const message = String(body.message ?? "").trim();
   const projectType = String(body.projectType ?? "");
   const budget = String(body.budget ?? "");

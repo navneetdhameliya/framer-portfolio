@@ -99,7 +99,11 @@ export function ContactForm() {
     if (checking) return;
     const form = e.currentTarget;
     const data = new FormData(form);
-    const email = String(data.get("email") ?? "").trim();
+    // Uppercase is fine while typing; on submit the address is trimmed and
+    // lowercased, and the field shows the cleaned-up version.
+    const email = String(data.get("email") ?? "").trim().toLowerCase();
+    const emailInput = form.elements.namedItem("email") as HTMLInputElement | null;
+    if (emailInput) emailInput.value = email;
 
     // 1. Incomplete or malformed address: answer instantly.
     if (!isEmailFormatValid(email)) {
@@ -287,12 +291,12 @@ function ResultDialog({
               <>
                 <p className="label">Check your email</p>
                 <h2 id="result-title" className="font-display mt-4 text-[36px] leading-[1.05] font-bold tracking-[-1.5px] md:text-[44px]">
-                  {bad.reason === "domain" ? "This email doesn't exist" : "This email isn't complete"}
+                  {bad.reason === "domain" ? "This email doesn't exist" : "Please enter a valid email address."}
                 </h2>
                 <p id="result-text" className="mx-auto mt-4 max-w-[360px] text-[16px] leading-[24px]">
                   {bad.reason === "domain"
                     ? "We couldn't find that email address. Please check it and try again."
-                    : "Please enter your full email address, like name@company.com."}
+                    : "For example, name@company.com."}
                 </p>
                 {bad.suggestion && (
                   <p className="mt-4 text-[16px] leading-[24px]">
